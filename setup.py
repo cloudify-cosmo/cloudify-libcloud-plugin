@@ -28,7 +28,6 @@ setup(
     packages=[
         'libcloud_plugin_common',
         'server_plugin',
-        'key_pair_plugin',
         'security_group_plugin',
         'floating_ip_plugin',
     ],
