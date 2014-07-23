@@ -22,7 +22,8 @@ from libcloud.compute.types import NodeState
 from libcloud_plugin_common import (LibcloudServerClient,
                                     LibcloudFloatingIPClient,
                                     LibcloudSecurityGroupClient,
-                                    transform_resource_name)
+                                    transform_resource_name,
+                                    LibcloudProviderContext)
 
 
 class EC2LibcloudServerClient(LibcloudServerClient):
@@ -204,3 +205,14 @@ class EC2LibcloudSecurityGroupClient(LibcloudSecurityGroupClient):
                 rule['port_range_min'],
                 rule['port_range_max'],
                 group_pairs=[{'group_id': rule['remote_group_id']}])
+
+
+class EC2LibcloudProviderContext(LibcloudProviderContext):
+
+    @property
+    def agents_security_group(self):
+        return self._resources.get('agents_security_group')
+
+    @property
+    def agents_keypair(self):
+        return self._resources.get('agents_keypair')

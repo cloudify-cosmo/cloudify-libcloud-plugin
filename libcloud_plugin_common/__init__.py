@@ -28,16 +28,15 @@ import abc
 
 from ec2 import (EC2LibcloudServerClient,
                  EC2LibcloudFloatingIPClient,
-                 EC2LibcloudSecurityGroupClient)
+                 EC2LibcloudSecurityGroupClient,
+                 EC2LibcloudProviderContext)
 
 
-class ProviderContext(object):
+class LibcloudProviderContext(object):
 
     def __init__(self, provider_context):
         self._provider_context = provider_context or {}
         self._resources = self._provider_context.get('resources', {})
-
-    # TODO: property list should be here
 
     def __repr__(self):
         info = json.dumps(self._provider_context)
@@ -45,7 +44,9 @@ class ProviderContext(object):
 
 
 def provider(ctx):
-    return ProviderContext(ctx.provider_context)
+    config = ctx.properties.get('cennection_config')
+    mapper = Mapper(config['provider_name'])
+    return mapper.get_provider_context(ctx.provider_context)
 
 
 def transform_resource_name(res, ctx):
@@ -352,3 +353,7 @@ class Mapper(object):
         if self.core_provider == Provider.EC2:
             return EC2LibcloudSecurityGroupClient()\
                 .get(mapper=self, config=config)
+
+    def get_provider_context(self, context):
+        if self.core_provider == Provider.EC2:
+            return EC2LibcloudProviderContext(context)
