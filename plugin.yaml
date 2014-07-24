@@ -9,15 +9,15 @@ plugins:
     server_plugin:
         derived_from: cloudify.plugins.manager_plugin
         properties:
-            url: https://github.com/AlexRaskosov/cloudify-libcloud-plugin/blob/develop/develop.zip
+            url: https://github.com/AlexRaskosov/cloudify-libcloud-plugin/archive/develop.zip
     security_group_plugin:
         derived_from: cloudify.plugins.manager_plugin
         properties:
-            url: https://github.com/AlexRaskosov/cloudify-libcloud-plugin/blob/develop/develop.zip
+            url: https://github.com/AlexRaskosov/cloudify-libcloud-plugin/archive/develop.zip
     floating_ip_plugin:
         derived_from: cloudify.plugins.manager_plugin
         properties:
-            url: https://github.com/AlexRaskosov/cloudify-libcloud-plugin/blob/develop/develop.zip
+            url: https://github.com/AlexRaskosov/cloudify-libcloud-plugin/archive/develop.zip
 
 types:
     cloudify.libcloud.server:
