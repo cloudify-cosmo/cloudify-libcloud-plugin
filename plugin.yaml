@@ -3,21 +3,21 @@
 ##################################################################################
 
 imports:
-    - http://www.getcloudify.org/spec/cloudify/{{ cloudify_version }}/types.yaml
+    - http://www.getcloudify.org/spec/cloudify/3.0/types.yaml
 
 plugins:
     server_plugin:
         derived_from: cloudify.plugins.manager_plugin
         properties:
-            url: https://github.com/cloudify-cosmo/cloudify-libcloud-plugin/archive/{{ plugin_branch }}.zip
+            url: https://github.com/AlexRaskosov/cloudify-libcloud-plugin/blob/develop/develop.zip
     security_group_plugin:
         derived_from: cloudify.plugins.manager_plugin
         properties:
-            url: https://github.com/cloudify-cosmo/cloudify-libcloud-plugin/archive/{{ plugin_branch }}.zip
+            url: https://github.com/AlexRaskosov/cloudify-libcloud-plugin/blob/develop/develop.zip
     floating_ip_plugin:
         derived_from: cloudify.plugins.manager_plugin
         properties:
-            url: https://github.com/cloudify-cosmo/cloudify-libcloud-plugin/archive/{{ plugin_branch }}.zip
+            url: https://github.com/AlexRaskosov/cloudify-libcloud-plugin/blob/develop/develop.zip
 
 types:
     cloudify.libcloud.server:
