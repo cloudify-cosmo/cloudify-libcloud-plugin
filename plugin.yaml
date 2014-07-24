@@ -60,8 +60,8 @@ relationships:
         derived_from: cloudify.relationships.connected_to
         source_interfaces:
             cloudify.interfaces.relationship_lifecycle:
-                - establish: server_plugin.server.connect_floatingip
-                - unlink: server_plugin.server.disconnect_floatingip
+                - establish: server_plugin.server.connect_floating_ip
+                - unlink: server_plugin.server.disconnect_floating_ip
 
     cloudify.libcloud.server_connected_to_security_group:
         derived_from: cloudify.relationships.connected_to
