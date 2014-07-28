@@ -251,6 +251,7 @@ def with_floating_ip_client(f):
         ctx = _find_context_in_kw(kw)
         if ctx:
             config = ctx.properties.get('connection_config')
+            print config
         else:
             raise NonRecoverableError('Connection config should be set.')
         mapper = Mapper(config['cloud_provider_name'])
