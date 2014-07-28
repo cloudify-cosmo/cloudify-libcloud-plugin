@@ -26,11 +26,6 @@ from libcloud.compute.types import Provider
 from libcloud.compute.providers import get_driver
 import abc
 
-from ec2 import (EC2LibcloudServerClient,
-                 EC2LibcloudFloatingIPClient,
-                 EC2LibcloudSecurityGroupClient,
-                 EC2LibcloudProviderContext)
-
 
 class LibcloudProviderContext(object):
 
@@ -342,18 +337,22 @@ class Mapper(object):
 
     def get_server_client(self, config):
         if self.core_provider == Provider.EC2:
+            from ec2 import EC2LibcloudServerClient
             return EC2LibcloudServerClient().get(mapper=self, config=config)
 
     def get_floating_ip_client(self, config):
         if self.core_provider == Provider.EC2:
+            from ec2 import EC2LibcloudFloatingIPClient
             return EC2LibcloudFloatingIPClient()\
                 .get(mapper=self, config=config)
 
     def get_security_group_client(self, config):
         if self.core_provider == Provider.EC2:
+            from ec2 import EC2LibcloudSecurityGroupClient
             return EC2LibcloudSecurityGroupClient()\
                 .get(mapper=self, config=config)
 
     def get_provider_context(self, context):
         if self.core_provider == Provider.EC2:
+            from ec2 import EC2LibcloudProviderContext
             return EC2LibcloudProviderContext(context)
