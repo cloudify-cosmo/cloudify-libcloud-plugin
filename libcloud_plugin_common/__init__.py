@@ -40,7 +40,7 @@ class LibcloudProviderContext(object):
 
 def provider(ctx):
     config = ctx.properties.get('cennection_config')
-    mapper = Mapper(config['provider_name'])
+    mapper = Mapper(config['cloud_provider_name'])
     return mapper.get_provider_context(ctx.provider_context)
 
 
@@ -239,7 +239,7 @@ def with_server_client(f):
             config = ctx.properties.get('cennection_config')
         else:
             raise NonRecoverableError('Connection config should be set.')
-        mapper = Mapper(config['provider_name'])
+        mapper = Mapper(config['cloud_provider_name'])
         kw['server_client'] = mapper.get_server_client(config)
         return f(*args, **kw)
     return wrapper
@@ -253,7 +253,7 @@ def with_floating_ip_client(f):
             config = ctx.properties.get('cennection_config')
         else:
             raise NonRecoverableError('Connection config should be set.')
-        mapper = Mapper(config['provider_name'])
+        mapper = Mapper(config['cloud_provider_name'])
         kw['floating_ip_client'] = mapper.get_floating_ip_client(config)
         return f(*args, **kw)
     return wrapper
@@ -261,7 +261,7 @@ def with_floating_ip_client(f):
 
 def get_floating_ip_client(ctx):
     config = ctx.properties.get('cennection_config')
-    mapper = Mapper(config['provider_name'])
+    mapper = Mapper(config['cloud_provider_name'])
     return mapper.get_floating_ip_client(config)
 
 
@@ -273,7 +273,7 @@ def with_security_group_client(f):
             config = ctx.properties.get('cennection_config')
         else:
             raise NonRecoverableError('Connection config should be set.')
-        mapper = Mapper(config['provider_name'])
+        mapper = Mapper(config['cloud_provider_name'])
         kw['security_group_client'] = mapper.get_security_group_client(config)
         return f(*args, **kw)
     return wrapper
