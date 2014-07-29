@@ -43,8 +43,8 @@ def create(ctx, security_group_client, **kwargs):
                                     security_group_client,
                                     security_group['name'])
     if existing_sg:
-        existing_description = security_group_client.get_description(existing_sg) or ''
-        description_to_create = security_group['description'] or ''
+        existing_description = security_group_client.get_description(existing_sg)
+        description_to_create = security_group['description']
         ctx.logger.error('existing: ' + existing_description)
         ctx.logger.error('to create: ' + description_to_create)
         if existing_description != description_to_create:
