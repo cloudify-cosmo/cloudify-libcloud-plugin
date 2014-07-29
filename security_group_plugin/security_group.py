@@ -106,12 +106,12 @@ def create(ctx, security_group_client, **kwargs):
         r1 = security_group_client.get_rules(existing_sg)
         r2 = security_group_rules
         if _sg_rules_are_equal(r1, r2):
+            existing_sg_id = security_group_client.get_id(existing_sg)
             ctx.logger.info("Using existing security group named '{0}' with "
                             "id {1}".format(
                                 security_group['name'],
-                                existing_sg['id']))
-            ctx.runtime_properties['external_id'] =\
-                security_group_client.get_id(existing_sg)
+                                existing_sg_id))
+            ctx.runtime_properties['external_id'] = existing_sg_id
             return
         else:
             raise RulesMismatchError("Rules of existing security group"
