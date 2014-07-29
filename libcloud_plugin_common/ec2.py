@@ -173,7 +173,7 @@ class EC2LibcloudSecurityGroupClient(LibcloudSecurityGroupClient):
         return sg.extra['description']
 
     def get_id(self, sg):
-        return sg.id
+        return sg['group_id']
 
     def get_rules(self, sg):
         result = []

@@ -123,11 +123,12 @@ def create(ctx, security_group_client, **kwargs):
                                          r2))
 
     sg = security_group_client.create(security_group)
+    sg_id = security_group_client.get_id(sg)
 
     for sgr in security_group_rules:
-        sgr['security_group_id'] = security_group_client.get_id(sg)
+        sgr['security_group_id'] = sg_id
         security_group_client.create_security_group_rule(sgr)
-    ctx.runtime_properties['external_id'] = sg['id']
+    ctx.runtime_properties['external_id'] = sg_id
 
 
 @operation
