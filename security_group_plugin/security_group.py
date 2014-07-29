@@ -189,7 +189,7 @@ def _sg_rules_are_equal(r1, r2):
 
 def _serialize_sg_rule_for_comparison(security_group_rule):
     r = copy.deepcopy(security_group_rule)
-    for excluded_field in ('id', 'security_group_id', 'tenant_id'):
+    for excluded_field in ('remote_group_id'):
         if excluded_field in r:
             del r[excluded_field]
     return json.dumps(r, sort_keys=True)
