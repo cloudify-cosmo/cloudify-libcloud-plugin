@@ -63,8 +63,8 @@ def create(ctx, security_group_client, **kwargs):
                 rule))
         sgr = {
             'direction': 'ingress',
-            'port_range_max': rule.get('port', 65535),
-            'port_range_min': rule.get('port', 1),
+            'port_range_max': str(rule.get('port', 65535)),
+            'port_range_min': str(rule.get('port', 1)),
             'protocol': 'tcp',
             'remote_group_id': None,
             'remote_ip_prefix': '0.0.0.0/0',
