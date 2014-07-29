@@ -40,7 +40,7 @@ def start_new_server(ctx, server_client, **kwargs):
 
     ctx.logger.info("Creating VM")
 
-    server = server_client.create(ctx.node_id, server, provider_context)
+    server = server_client.create(ctx.node_id, ctx, server, provider_context)
     server_client.wait_for_server_to_be_running(server, TIMEOUT, SLEEP_TIME)
 
     ctx.runtime_properties[LIBCLOUD_SERVER_ID_PROPERTY] = server.id
