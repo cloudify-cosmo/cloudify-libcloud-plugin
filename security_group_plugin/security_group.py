@@ -43,6 +43,7 @@ def create(ctx, security_group_client, **kwargs):
                                     security_group_client,
                                     security_group['name'])
     if existing_sg:
+        ctx.logger.error('!!!!' + security_group_client.get_description(existing_sg) + '!!!!!' + security_group['description'] + '!!!!!')
         if security_group_client.get_description(existing_sg)\
                 != security_group['description']:
             raise NonRecoverableError("Descriptions of existing security group"
