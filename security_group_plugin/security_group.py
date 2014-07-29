@@ -67,7 +67,7 @@ def create(ctx, security_group_client, **kwargs):
             'port_range_min': str(rule.get('port', 1)),
             'protocol': 'tcp',
             'remote_group_id': None,
-            'remote_ip_prefix': '0.0.0.0/0',
+            'remote_ip_prefix': str('0.0.0.0/0'),
         }
         sgr.update(rule)
 
@@ -189,9 +189,8 @@ def _sg_rules_are_equal(r1, r2):
 
 def _serialize_sg_rule_for_comparison(security_group_rule):
     r = copy.deepcopy(security_group_rule)
-    for excluded_field in ('remote_group_id'):
-        if excluded_field in r:
-            del r[excluded_field]
+    if 'remote_group_id' in r:
+        del r['remote_group_id']
     return json.dumps(r, sort_keys=True)
 
 
