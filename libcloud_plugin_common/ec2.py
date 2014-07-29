@@ -110,7 +110,7 @@ class EC2LibcloudServerClient(LibcloudServerClient):
         else:
             raise NonRecoverableError("Image is a required parameter")
         if 'size_name' in server_context:
-            size = self.get_size_by_name(server_context['size_name']).id
+            size = self.get_size_by_name(server_context['size_name'])
         else:
             raise NonRecoverableError("Size is a required parameter")
 
