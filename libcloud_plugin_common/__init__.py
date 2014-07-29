@@ -39,7 +39,7 @@ class LibcloudProviderContext(object):
 
 
 def provider(ctx):
-    config = ctx.properties.get('connection_config')
+    config = _get_connection_config(ctx)
     mapper = Mapper(config['cloud_provider_name'])
     return mapper.get_provider_context(ctx.provider_context)
 
@@ -71,41 +71,10 @@ def transform_resource_name(res, ctx):
     return res['name']
 
 
-class Config(object):
-    def get(self):
-        which = self.__class__.which
-        env_name = which.upper() + '_CONFIG_PATH'
-        default_location_tpl = '~/' + which + '_config.json'
-        default_location = os.path.expanduser(default_location_tpl)
-        config_path = os.getenv(env_name, default_location)
-        try:
-            with open(config_path) as f:
-                cfg = json.loads(f.read())
-        except IOError:
-            raise NonRecoverableError(
-                "Failed to read {0} configuration from file '{1}'."
-                "The configuration is looked up in {2}. If defined, "
-                "environment variable "
-                "{3} overrides that location.".format(
-                    which, config_path, default_location_tpl, env_name))
-        return cfg
-
-
-class ConnectionConfig(Config):
-    which = 'connection'
-
-
 class LibcloudClient(object):
 
-    config = ConnectionConfig
-
-    def get(self, mapper, config=None, *args, **kw):
-        static_config = self.__class__.config().get()
-        cfg = {}
-        cfg.update(static_config)
-        if config:
-            cfg.update(config)
-        ret = self.connect(cfg, mapper)
+    def get(self, mapper, config, *args, **kw):
+        ret = self.connect(config, mapper)
         ret.format = 'json'
         return ret
 
@@ -231,14 +200,38 @@ def _find_context_in_kw(kw):
     return _find_instanceof_in_kw(cloudify.context.CloudifyContext, kw)
 
 
+def _get_connection_config(ctx):
+    def _get_static_config():
+        which = 'connection'
+        env_name = which.upper() + '_CONFIG_PATH'
+        default_location_tpl = '~/' + which + '_config.json'
+        default_location = os.path.expanduser(default_location_tpl)
+        config_path = os.getenv(env_name, default_location)
+        try:
+            with open(config_path) as f:
+                cfg = json.loads(f.read())
+        except IOError:
+            raise NonRecoverableError(
+                "Failed to read {0} configuration from file '{1}'."
+                "The configuration is looked up in {2}. If defined, "
+                "environment variable "
+                "{3} overrides that location.".format(
+                    which, config_path, default_location_tpl, env_name))
+        return cfg
+    static_config = _get_static_config()
+    cfg = {}
+    cfg.update(static_config)
+    config = ctx.properties.get('connection_config')
+    if config:
+        cfg.update(config)
+    return cfg
+
+
 def with_server_client(f):
     @wraps(f)
     def wrapper(*args, **kw):
         ctx = _find_context_in_kw(kw)
-        if ctx:
-            config = ctx.properties.get('connection_config')
-        else:
-            raise NonRecoverableError('Connection config should be set.')
+        config = _get_connection_config(ctx)
         mapper = Mapper(config['cloud_provider_name'])
         kw['server_client'] = mapper.get_server_client(config)
         return f(*args, **kw)
@@ -249,10 +242,7 @@ def with_floating_ip_client(f):
     @wraps(f)
     def wrapper(*args, **kw):
         ctx = _find_context_in_kw(kw)
-        if ctx:
-            config = ctx.properties.get('connection_config')
-        else:
-            raise NonRecoverableError('Connection config should be set.')
+        config = _get_connection_config(ctx)
         mapper = Mapper(config['cloud_provider_name'])
         kw['floating_ip_client'] = mapper.get_floating_ip_client(config)
         return f(*args, **kw)
@@ -260,7 +250,7 @@ def with_floating_ip_client(f):
 
 
 def get_floating_ip_client(ctx):
-    config = ctx.properties.get('connection_config')
+    config = _get_connection_config(ctx)
     mapper = Mapper(config['cloud_provider_name'])
     return mapper.get_floating_ip_client(config)
 
@@ -269,10 +259,7 @@ def with_security_group_client(f):
     @wraps(f)
     def wrapper(*args, **kw):
         ctx = _find_context_in_kw(kw)
-        if ctx:
-            config = ctx.properties.get('connection_config')
-        else:
-            raise NonRecoverableError('Connection config should be set.')
+        config = _get_connection_config(ctx)
         mapper = Mapper(config['cloud_provider_name'])
         kw['security_group_client'] = mapper.get_security_group_client(config)
         return f(*args, **kw)
