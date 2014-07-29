@@ -142,13 +142,14 @@ def delete(ctx, security_group_client, **kwargs):
 
 def _find_existing_sg(ctx, security_group_client, name):
     existing_sgs = security_group_client.get_list_by_name(name)
-    existing_sgs = list(existing_sgs)
-    if len(existing_sgs) > 1:
-        raise NonRecoverableError("Multiple security groups with name '{0}' "
-                                  "already exist while trying to create "
-                                  "security group with same name"
-                                  .format(name))
     if existing_sgs:
+        existing_sgs = list(existing_sgs)
+        if len(existing_sgs) > 1:
+            raise NonRecoverableError("Multiple security groups with name '{0}' "
+                                      "already exist while trying to create "
+                                      "security group with same name"
+                                      .format(name))
+
         ctx.logger.info("Found existing security group "
                         "with name '{0}'".format(name))
         return existing_sgs[0]
