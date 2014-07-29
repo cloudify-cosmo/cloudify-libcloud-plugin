@@ -29,9 +29,7 @@ TIMEOUT = 120
 SLEEP_TIME = 5
 
 
-@operation
-@with_server_client
-def create(ctx, server_client, **kwargs):
+def start_new_server(ctx, server_client, **kwargs):
     provider_context = provider(ctx)
 
     server = {
@@ -52,11 +50,11 @@ def create(ctx, server_client, **kwargs):
 @with_server_client
 def start(ctx, server_client, **kwargs):
     server = get_server_by_context(server_client, ctx)
-    if server is None:
-        raise RuntimeError(
-            "Cannot start server - server doesn't exist for node: {0}"
-            .format(ctx.node_id))
-    server_client.start_server(server)
+    if server is not None:
+        server_client.start_server(server)
+        return
+
+    start_new_server(ctx, server_client, **kwargs)
 
 
 @operation
