@@ -129,6 +129,8 @@ class EC2LibcloudServerClient(LibcloudServerClient):
             else:
                 raise NonRecoverableError("Key is a required parameter")
 
+        ctx.logger.error(security_groups)
+
         node = self.driver.create_node(name=name,
                                        image=image,
                                        size=size,
