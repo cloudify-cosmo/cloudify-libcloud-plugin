@@ -189,11 +189,13 @@ class EC2LibcloudSecurityGroupClient(LibcloudSecurityGroupClient):
                 'remote_ip_prefix': '0.0.0.0/0',
             }
             if 'group_pairs' in rule:
-                sgr['remote_group_id'] = rule['group_pairs'][0]['group_id']
-                del sgr['remote_ip_prefix']
+                if len(rule['group_pairs']) > 0:
+                    sgr['remote_group_id'] = rule['group_pairs'][0]['group_id']
+                    del sgr['remote_ip_prefix']
             if 'cidr_ips' in rule:
-                sgr['remote_ip_prefix'] = rule['cidr_ips'][0]
-                del sgr['remote_group_id']
+                if len(rule['cidr_ips']) > 0:
+                    sgr['remote_ip_prefix'] = rule['cidr_ips'][0]
+                    del sgr['remote_group_id']
             result.append(sgr)
         return result
 
