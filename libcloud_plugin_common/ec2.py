@@ -164,7 +164,10 @@ class EC2LibcloudSecurityGroupClient(LibcloudSecurityGroupClient):
         self.driver.ex_delete_security_group_by_id(id)
 
     def get_list_by_name(self, name):
-        return self.driver.ex_get_security_groups(group_names=[name])
+        try:
+            return self.driver.ex_get_security_groups(group_names=[name])
+        except:
+            return None
 
     def get_description(self, sg):
         return sg.extra.description
