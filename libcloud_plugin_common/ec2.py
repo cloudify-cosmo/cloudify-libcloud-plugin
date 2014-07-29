@@ -170,7 +170,7 @@ class EC2LibcloudSecurityGroupClient(LibcloudSecurityGroupClient):
             return None
 
     def get_description(self, sg):
-        return sg.extra.description
+        return sg.extra['description']
 
     def get_id(self, sg):
         return sg.id
