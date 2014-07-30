@@ -129,7 +129,7 @@ def disconnect_floating_ip(ctx, server_client, **kwargs):
             "Cannot connect floating IP to the server"
             " - floating IP doesn't exist: {0}"
             .format(ip))
-    server_client.disconnect_floating_ip(ip)
+    server_client.disconnect_floating_ip(floating_ip)
 
 
 def get_server_by_context(server_client, ctx):
