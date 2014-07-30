@@ -81,8 +81,10 @@ def delete(ctx, server_client, **kwargs):
 @operation
 @with_server_client
 def get_state(ctx, server_client, **kwargs):
+    ctx.logger.info("Try to get server state")
     server = get_server_by_context(server_client, ctx)
     if server_client.is_server_active(server):
+        ctx.logger.info("Server \'{0}\' is active".format(server.name))
         ips = {}
         ips['private'] = server.private_ips
         ips['public'] = server.public_ips
@@ -90,6 +92,8 @@ def get_state(ctx, server_client, **kwargs):
         manager_network_ip = None
         if server.public_ips:
             manager_network_ip = server.public_ips[0]
+        ctx.logger.info("Return \'{0}\' as server \'{1}\' IP"
+                        .format(manager_network_ip, server.name))
         ctx.runtime_properties['ip'] = manager_network_ip
         return True
     return False
@@ -98,6 +102,7 @@ def get_state(ctx, server_client, **kwargs):
 @operation
 @with_server_client
 def connect_floating_ip(ctx, server_client, **kwargs):
+    ctx.logger.info("Try to connect floating IP")
     server = get_server_by_context(server_client, ctx)
     if server is None:
         raise RuntimeError(
@@ -112,6 +117,9 @@ def connect_floating_ip(ctx, server_client, **kwargs):
             "Cannot connect floating IP to the server"
             " - floating IP doesn't exist: {0}"
             .format(ip))
+    ctx.logger.info("Connect floating IP method called:"
+                    " server - {0}, IP - {1}"
+                    .format(server.name, ip.ip))
     server_client.connect_floating_ip(server, ip)
 
 
