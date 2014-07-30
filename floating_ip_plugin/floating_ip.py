@@ -59,7 +59,7 @@ def delete(ctx, floating_ip_client, **kwargs):
     do_delete = bool(ctx.runtime_properties.get('enable_deletion'))
     op = ['Not deleting', 'Deleting'][do_delete]
     ctx.logger.debug("{0} floating IP {1}".format(
-        op, ctx.runtime_properties['ip_address']))
+        op, ctx.runtime_properties['floating_ip_address']))
     if do_delete:
         ip_address = ctx.runtime_properties['external_id']
         ip = floating_ip_client.get_by_ip(ip_address)
