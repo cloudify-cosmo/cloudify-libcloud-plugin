@@ -89,12 +89,7 @@ def get_state(ctx, server_client, **kwargs):
         ips['private'] = server.private_ips
         ips['public'] = server.public_ips
         ctx.runtime_properties['networks'] = ips
-        manager_network_ip = None
-        if server.public_ips:
-            manager_network_ip = server.public_ips[0]
-        ctx.logger.info("Return \'{0}\' as server \'{1}\' IP"
-                        .format(manager_network_ip, server.name))
-        ctx.runtime_properties['ip'] = manager_network_ip
+        ctx.runtime_properties['ip'] = server.private_ips[0]
         return True
     return False
 
