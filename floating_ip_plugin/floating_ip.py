@@ -45,7 +45,8 @@ def create(ctx, floating_ip_client, **kwargs):
         return
 
     fip = floating_ip_client.create()
-    ctx.runtime_properties['ip_address'] = fip.ip
+    ctx.runtime_properties['external_id'] = fip.ip
+    ctx.runtime_properties['floating_ip_address'] = fip.ip
     # Acquired here -> OK to delete
     ctx.runtime_properties['enable_deletion'] = True
     ctx.logger.info(
@@ -60,7 +61,7 @@ def delete(ctx, floating_ip_client, **kwargs):
     ctx.logger.debug("{0} floating IP {1}".format(
         op, ctx.runtime_properties['ip_address']))
     if do_delete:
-        ip_address = ctx.runtime_properties['ip_address']
+        ip_address = ctx.runtime_properties['external_id']
         ip = floating_ip_client.get_by_ip(ip_address)
         if not ip:
             raise NonRecoverableError('Floating IP can\'t be found for IP: {}'
