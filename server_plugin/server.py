@@ -114,7 +114,7 @@ def connect_floating_ip(ctx, server_client, **kwargs):
             .format(ip))
     ctx.logger.info("Connect floating IP method called:"
                     " server - {0}, IP - {1}"
-                    .format(server.name, ip.ip))
+                    .format(server.name, ip))
     server_client.connect_floating_ip(server, ip)
 
 
