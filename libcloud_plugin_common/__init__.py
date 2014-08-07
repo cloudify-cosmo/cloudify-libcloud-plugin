@@ -40,8 +40,13 @@ class LibcloudProviderContext(object):
 
 def provider(ctx):
     config = _get_connection_config(ctx)
-    mapper = Mapper(config['cloud_provider_name'])
+    mapper = Mapper(
+        transfer_cloud_provider_name(config['cloud_provider_name']))
     return mapper.get_provider_context(ctx.provider_context)
+
+
+def transfer_cloud_provider_name(provider_name):
+    return provider_name.replace('-', '_')
 
 
 def transform_resource_name(res, ctx):
@@ -232,7 +237,8 @@ def with_server_client(f):
     def wrapper(*args, **kw):
         ctx = _find_context_in_kw(kw)
         config = _get_connection_config(ctx)
-        mapper = Mapper(config['cloud_provider_name'])
+        mapper = Mapper(
+            transfer_cloud_provider_name(config['cloud_provider_name']))
         kw['server_client'] = mapper.get_server_client(config)
         return f(*args, **kw)
     return wrapper
@@ -243,7 +249,8 @@ def with_floating_ip_client(f):
     def wrapper(*args, **kw):
         ctx = _find_context_in_kw(kw)
         config = _get_connection_config(ctx)
-        mapper = Mapper(config['cloud_provider_name'])
+        mapper = Mapper(
+            transfer_cloud_provider_name(config['cloud_provider_name']))
         kw['floating_ip_client'] = mapper.get_floating_ip_client(config)
         return f(*args, **kw)
     return wrapper
@@ -251,7 +258,8 @@ def with_floating_ip_client(f):
 
 def get_floating_ip_client(ctx):
     config = _get_connection_config(ctx)
-    mapper = Mapper(config['cloud_provider_name'])
+    mapper = Mapper(
+        transfer_cloud_provider_name(config['cloud_provider_name']))
     return mapper.get_floating_ip_client(config)
 
 
@@ -260,7 +268,8 @@ def with_security_group_client(f):
     def wrapper(*args, **kw):
         ctx = _find_context_in_kw(kw)
         config = _get_connection_config(ctx)
-        mapper = Mapper(config['cloud_provider_name'])
+        mapper = Mapper(
+            transfer_cloud_provider_name(config['cloud_provider_name']))
         kw['security_group_client'] = mapper.get_security_group_client(config)
         return f(*args, **kw)
     return wrapper

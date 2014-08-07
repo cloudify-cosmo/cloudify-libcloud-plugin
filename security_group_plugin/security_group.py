@@ -43,7 +43,8 @@ def create(ctx, security_group_client, **kwargs):
                                     security_group_client,
                                     security_group['name'])
     if existing_sg:
-        existing_description = security_group_client.get_description(existing_sg)
+        existing_description = security_group_client\
+            .get_description(existing_sg)
         if existing_description and existing_description.lower() == 'none':
             existing_description = None
         description_to_create = security_group['description']
@@ -149,9 +150,10 @@ def _find_existing_sg(ctx, security_group_client, name):
     if existing_sgs:
         existing_sgs = list(existing_sgs)
         if len(existing_sgs) > 1:
-            raise NonRecoverableError("Multiple security groups with name '{0}' "
-                                      "already exist while trying to create "
-                                      "security group with same name"
+            raise NonRecoverableError("Multiple security groups with name"
+                                      " '{0}' already exist while trying"
+                                      " to create security group with"
+                                      " same name"
                                       .format(name))
 
         ctx.logger.info("Found existing security group "
