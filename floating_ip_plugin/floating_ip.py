@@ -13,7 +13,6 @@
 #  * See the License for the specific language governing permissions and
 #  * limitations under the License.
 
-__author__ = 'Oleksandr_Raskosov'
 
 from cloudify.decorators import operation
 from libcloud_plugin_common import with_floating_ip_client

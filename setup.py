@@ -13,8 +13,6 @@
 #  * See the License for the specific language governing permissions and
 #  * limitations under the License.
 
-__author__ = 'Oleksandr_Raskosov'
-
 
 from setuptools import setup
 
@@ -23,8 +21,8 @@ setup(
     zip_safe=True,
     name='cloudify-libcloud-plugin',
     version='1.0',
-    author='Oleksandr_Raskosov',
-    author_email='Oleksandr_Raskosov@epam.com',
+    author='Gigaspaces',
+    author_email='cosmo-admin@gigaspaces.com',
     packages=[
         'libcloud_plugin_common',
         'server_plugin',
@@ -34,7 +32,7 @@ setup(
     license='LICENSE',
     description='Cloudify plugin for Libcloud infrastructure.',
     install_requires=[
-        'cloudify-plugins-common>=3.0',
+        'cloudify-plugins-common==3.0',
         'apache-libcloud==0.15.1',
     ]
 )
