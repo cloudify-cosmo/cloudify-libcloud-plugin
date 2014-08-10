@@ -6,15 +6,15 @@ plugins:
   floating_ip_plugin:
     derived_from: cloudify.plugins.manager_plugin
     properties:
-      url: "https://github.com/AlexRaskosov/cloudify-libcloud-plugin/archive/master.zip"
+      url: https://github.com/cloudify-cosmo/cloudify-libcloud-plugin/archive/master.zip
   security_group_plugin:
     derived_from: cloudify.plugins.manager_plugin
     properties:
-      url: "https://github.com/AlexRaskosov/cloudify-libcloud-plugin/archive/master.zip"
+      url: https://github.com/cloudify-cosmo/cloudify-libcloud-plugin/archive/master.zip
   server_plugin:
     derived_from: cloudify.plugins.manager_plugin
     properties:
-      url: "https://github.com/AlexRaskosov/cloudify-libcloud-plugin/archive/master.zip"
+      url: https://github.com/cloudify-cosmo/cloudify-libcloud-plugin/archive/master.zip
 
 relationships:
   cloudify.libcloud.server_connected_to_floating_ip:
