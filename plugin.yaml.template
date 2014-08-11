@@ -27,7 +27,7 @@ relationships:
 
 types:
   cloudify.libcloud.floatingip:
-    derived_from: cloudify.types.base
+    derived_from: cloudify.types.virtual_ip
     interfaces:
       cloudify.interfaces.lifecycle:
         - create: floating_ip_plugin.floating_ip.create
@@ -37,7 +37,7 @@ types:
       - connection_config: {}
 
   cloudify.libcloud.security_group:
-    derived_from: cloudify.types.base
+    derived_from: cloudify.types.security_group
     interfaces:
       cloudify.interfaces.lifecycle:
         - create: security_group_plugin.security_group.create
