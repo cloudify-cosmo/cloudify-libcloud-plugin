@@ -2,15 +2,7 @@
 # Cloudify Libcloud definitions.
 
 plugins:
-  floating_ip_plugin:
-    derived_from: cloudify.plugins.manager_plugin
-    properties:    
-      url: https://github.com/cloudify-cosmo/cloudify-libcloud-plugin/archive/{{ plugin_branch }}.zip
-  security_group_plugin:
-    derived_from: cloudify.plugins.manager_plugin
-    properties:
-      url: https://github.com/cloudify-cosmo/cloudify-libcloud-plugin/archive/{{ plugin_branch }}.zip
-  server_plugin:
+  libcloud-plugin:
     derived_from: cloudify.plugins.manager_plugin
     properties:
       url: https://github.com/cloudify-cosmo/cloudify-libcloud-plugin/archive/{{ plugin_branch }}.zip
@@ -20,8 +12,8 @@ relationships:
     derived_from: cloudify.relationships.connected_to
     source_interfaces:
       cloudify.interfaces.relationship_lifecycle:
-        - establish: server_plugin.server.connect_floating_ip
-        - unlink: server_plugin.server.disconnect_floating_ip
+        - establish: libcloud-plugin.server_plugin.server.connect_floating_ip
+        - unlink: libcloud-plugin.server_plugin.server.disconnect_floating_ip
   cloudify.libcloud.server_connected_to_security_group:
     derived_from: cloudify.relationships.connected_to
 
@@ -30,8 +22,8 @@ types:
     derived_from: cloudify.types.virtual_ip
     interfaces:
       cloudify.interfaces.lifecycle:
-        - create: floating_ip_plugin.floating_ip.create
-        - delete: floating_ip_plugin.floating_ip.delete
+        - create: libcloud-plugin.floating_ip_plugin.floating_ip.create
+        - delete: libcloud-plugin.floating_ip_plugin.floating_ip.delete
     properties:
       - floatingip: {}
       - connection_config: {}
@@ -40,8 +32,8 @@ types:
     derived_from: cloudify.types.security_group
     interfaces:
       cloudify.interfaces.lifecycle:
-        - create: security_group_plugin.security_group.create
-        - delete: security_group_plugin.security_group.delete
+        - create: libcloud-plugin.security_group_plugin.security_group.create
+        - delete: libcloud-plugin.security_group_plugin.security_group.delete
     properties:
       - security_group
       - connection_config: {}
@@ -52,11 +44,11 @@ types:
     derived_from: cloudify.types.host
     interfaces:
       cloudify.interfaces.host:
-        - get_state: server_plugin.server.get_state
+        - get_state: libcloud-plugin.server_plugin.server.get_state
       cloudify.interfaces.lifecycle:
-        - start: server_plugin.server.start
-        - stop: server_plugin.server.stop
-        - delete: server_plugin.server.delete
+        - start: libcloud-plugin.server_plugin.server.start
+        - stop: libcloud-plugin.server_plugin.server.stop
+        - delete: libcloud-plugin.server_plugin.server.delete
     properties:
       - server
       - connection_config: {}
