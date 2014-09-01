@@ -34,7 +34,7 @@ node_types:
     derived_from: cloudify.types.security_group
     interfaces:
       cloudify.interfaces.lifecycle:
-        - create: libcloud.security_group_plugin.security_groupsecurity_group.create
+        - create: libcloud.security_group_plugin.security_group.create
         - delete: libcloud.security_group_plugin.security_group.delete
     properties:
       security_group: {}
