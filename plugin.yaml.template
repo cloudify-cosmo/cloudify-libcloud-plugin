@@ -2,10 +2,9 @@
 # Cloudify Libcloud definitions.
 
 plugins:
-  libcloud:
-    derived_from: cloudify.plugins.manager_plugin
-    properties:    
-      url: https://github.com/cloudify-cosmo/cloudify-libcloud-plugin/archive/{{ plugin_branch }}.zip
+    libcloud:
+        executor: central_deployment_agent
+        source: https://github.com/cloudify-cosmo/cloudify-libcloud-plugin/archive/{{ plugin_branch }}.zip
 
 relationships:
   cloudify.libcloud.server_connected_to_floating_ip:
