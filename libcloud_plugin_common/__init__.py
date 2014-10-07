@@ -318,6 +318,9 @@ class Mapper(object):
         elif provider_name == Provider.EC2_US_WEST_OREGON:
             self.core_provider = Provider.EC2
             self.provider = Provider.EC2_US_WEST_OREGON
+        elif provider_name = Provider.VCLOUD:
+            self.provider = Provider.VCLOUD
+            self.core_provider = Provider.VCLOUD
         else:
             raise NonRecoverableError('Error during trying to choose'
                                       ' the Libcloud provider,'
@@ -328,25 +331,42 @@ class Mapper(object):
         if self.core_provider == Provider.EC2:
             return get_driver(self.provider)(connection_config['access_id'],
                                              connection_config['secret_key'])
+        elif self.core_provider == Provider.VCLOUD:
+            return get_driver(self.provider)(connection_config['access_id'],
+                                             connection_config['secret_key'])
 
     def get_server_client(self, config):
         if self.core_provider == Provider.EC2:
             from ec2 import EC2LibcloudServerClient
             return EC2LibcloudServerClient().get(mapper=self, config=config)
+        elif self.core_provider == Provider.VCLOUD:
+            from vcloud import VCloudLibcloudServerClient
+            return VCloudLibcloudServerClient().get(mapper=self, config=config)
 
     def get_floating_ip_client(self, config):
         if self.core_provider == Provider.EC2:
             from ec2 import EC2LibcloudFloatingIPClient
             return EC2LibcloudFloatingIPClient()\
                 .get(mapper=self, config=config)
+        elif self.core_provider == Provider.VCLOUD:
+            from vcloud import VCLOUDLibcloudFloatingIPClient
+            return VCloudLibcloudFloatingIPClient()\
+                VCloudLibcloudFloatingIPClient.get(mapper=self, config=config)
 
     def get_security_group_client(self, config):
         if self.core_provider == Provider.EC2:
             from ec2 import EC2LibcloudSecurityGroupClient
             return EC2LibcloudSecurityGroupClient()\
                 .get(mapper=self, config=config)
+        elif self.core_provider == Provider.VCLOUD:
+            from vcloud import EC2LibcloudSecurityGroupClient
+            return VCloudLibcloudSecurityGroupClient()\
+                VCloudLibcloudSecurityGroupClient.get(mapper=self, config=config)
 
     def get_provider_context(self, context):
         if self.core_provider == Provider.EC2:
             from ec2 import EC2LibcloudProviderContext
             return EC2LibcloudProviderContext(context)
+        elif self.core_provider == Provider.VCLOUD:
+            from vcloud import VCloudLibcloudProviderContext
+            return VCloudLibcloudProviderContext(context)
