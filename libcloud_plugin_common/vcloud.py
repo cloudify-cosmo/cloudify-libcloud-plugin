@@ -86,11 +86,11 @@ class VCloudLibcloudServerClient(LibcloudServerClient):
                 if image.name = image_name:
                     return image
 
-    def get_size_by_name(self, size_name):
+    def get_size_by_ram(self, ram):
         sizes = self.driver.list_sizes()
         if sizes:
             for item in sizes:
-                if item.id == size_name:
+                if item.ram == ram:
                     return item
 
     def is_server_active(self, server):
@@ -110,33 +110,38 @@ class VCloudLibcloudServerClient(LibcloudServerClient):
             image = self.get_image_by_name(server_context['image_name'])
         else:
             raise NonRecoverableError("Image is a required parameter")
-        if 'size_name' in server_context:
-            size = self.get_size_by_name(server_context['size_name'])
+        if 'ram' in server_context:
+            size = self.get_size_by_ram(int(server_context['ram']))
         else:
-            raise NonRecoverableError("Size is a required parameter")
-
-        security_groups = map(rename,
-                              server_context.get('security_groups', []))
-        if provider_context.agents_security_group:
-            asg = provider_context.agents_security_group['name']
-            if asg not in security_groups:
-                security_groups.append(asg)
-
-        if 'key_name' in server_context:
-            key_name = rename(server_context['key_name'])
+            raise NonRecoverableError("ram is a required parameter")
+        if 'vcpus' in server_context:
+            vcpus = int(server_context['vcpus'])
         else:
-            if provider_context.agents_keypair:
-                key_name = provider_context.agents_keypair['name']
-            else:
-                raise NonRecoverableError("Key is a required parameter")
+            vcpus = 1
 
-        ctx.logger.error(security_groups)
+#For now it is disabled
+#        security_groups = map(rename,
+#                              server_context.get('security_groups', []))
+#        if provider_context.agents_security_group:
+#            asg = provider_context.agents_security_group['name']
+#            if asg not in security_groups:
+#                security_groups.append(asg)
+
+#        if 'key_name' in server_context:
+#            key_name = rename(server_context['key_name'])
+#        else:
+#            if provider_context.agents_keypair:
+#                key_name = provider_context.agents_keypair['name']
+#            else:
+#                raise NonRecoverableError("Key is a required parameter")
+
+#        ctx.logger.error(security_groups)
 
         node = self.driver.create_node(name=name,
                                        image=image,
-                                       size=size,
-                                       ex_keyname=key_name,
-                                       ex_group=security_groups)
+                                       ex_vm_memory=size.ram,
+                                       ex_vm_cpu=vcpus,
+                                       )
         return node
 
 

@@ -333,7 +333,8 @@ class Mapper(object):
                                              connection_config['secret_key'])
         elif self.core_provider == Provider.VCLOUD:
             return get_driver(self.provider)(connection_config['access_id'],
-                                             connection_config['secret_key'])
+                                             connection_config['secret_key'],
+                                             connection_config['host'])
 
     def get_server_client(self, config):
         if self.core_provider == Provider.EC2:
