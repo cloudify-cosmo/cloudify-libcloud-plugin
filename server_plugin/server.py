@@ -31,17 +31,20 @@ def start_new_server(ctx, server_client, **kwargs):
     provider_context = provider(ctx)
 
     server = {
-        'name': ctx.node_id
+        'name': ctx.instance.id
     }
-    server.update(copy.deepcopy(ctx.properties['server']))
+    server.update(copy.deepcopy(ctx.node.properties['server']))
     transform_resource_name(server, ctx)
 
     ctx.logger.info("Creating VM")
 
-    server = server_client.create(ctx.node_id, ctx, server, provider_context)
+    server = server_client.create(ctx.instace.id,
+                                  ctx,
+                                  server,
+                                  provider_context)
     server_client.wait_for_server_to_be_running(server, TIMEOUT, SLEEP_TIME)
 
-    ctx.runtime_properties[LIBCLOUD_SERVER_ID_PROPERTY] = server.id
+    ctx.instance.runtime_properties[LIBCLOUD_SERVER_ID_PROPERTY] = server.id
 
 
 @operation
@@ -62,7 +65,7 @@ def stop(ctx, server_client, **kwargs):
     if server is None:
         raise RuntimeError(
             "Cannot stop server - server doesn't exist for node: {0}"
-            .format(ctx.node_id))
+            .format(ctx.instance.id))
     server_client.stop_server(server)
 
 
@@ -86,8 +89,8 @@ def get_state(ctx, server_client, **kwargs):
         ips = {}
         ips['private'] = server.private_ips
         ips['public'] = server.public_ips
-        ctx.runtime_properties['networks'] = ips
-        ctx.runtime_properties['ip'] = server.private_ips[0]
+        ctx.instance.runtime_properties['networks'] = ips
+        ctx.instance.runtime_properties['ip'] = server.private_ips[0]
         return True
     return False
 
@@ -101,7 +104,7 @@ def connect_floating_ip(ctx, server_client, **kwargs):
         raise RuntimeError(
             "Cannot connect floating IP to the server"
             " - server doesn't exist for node: {0}"
-            .format(ctx.node_id))
+            .format(ctx.instance.id))
     floating_ip_client = get_floating_ip_client(ctx)
     ip = ctx.related.runtime_properties['floating_ip_address']
     floating_ip = floating_ip_client.get_by_ip(ip)
@@ -131,7 +134,7 @@ def disconnect_floating_ip(ctx, server_client, **kwargs):
 
 
 def get_server_by_context(server_client, ctx):
-    if LIBCLOUD_SERVER_ID_PROPERTY in ctx.runtime_properties:
+    if LIBCLOUD_SERVER_ID_PROPERTY in ctx.instance.runtime_properties:
         return server_client.get_by_id(
-            ctx.runtime_properties[LIBCLOUD_SERVER_ID_PROPERTY])
-    return server_client.get_by_name(ctx.node_id)
+            ctx.instance.runtime_properties[LIBCLOUD_SERVER_ID_PROPERTY])
+    return server_client.get_by_name(ctx.instance.id)

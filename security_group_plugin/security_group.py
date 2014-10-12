@@ -32,10 +32,10 @@ NODE_NAME_RE = re.compile('^(.*)_.*$')  # Anything before last underscore
 def create(ctx, security_group_client, **kwargs):
     security_group = {
         'description': None,
-        'name': ctx.node_id,
+        'name': ctx.instance.id,
     }
 
-    security_group.update(ctx.properties['security_group'])
+    security_group.update(ctx.node.properties['security_group'])
     transform_resource_name(security_group, ctx)
 
     existing_sg = _find_existing_sg(ctx,
@@ -54,7 +54,7 @@ def create(ctx, security_group_client, **kwargs):
                                       " Security group name: {0}".format(
                                           security_group['name']))
 
-    rules_to_apply = ctx.properties['rules']
+    rules_to_apply = ctx.node.properties['rules']
 
     security_group_rules = []
     for rule in rules_to_apply:
@@ -111,7 +111,7 @@ def create(ctx, security_group_client, **kwargs):
                             "id {1}".format(
                                 security_group['name'],
                                 existing_sg_id))
-            ctx.runtime_properties['external_id'] = existing_sg_id
+            ctx.instance.runtime_properties['external_id'] = existing_sg_id
             return
         else:
             raise RulesMismatchError("Rules of existing security group"
@@ -131,13 +131,13 @@ def create(ctx, security_group_client, **kwargs):
     for sgr in security_group_rules:
         sgr['security_group_id'] = sg_id
         security_group_client.create_security_group_rule(sgr)
-    ctx.runtime_properties['external_id'] = sg_id
+    ctx.instance.runtime_properties['external_id'] = sg_id
 
 
 @operation
 @with_security_group_client
 def delete(ctx, security_group_client, **kwargs):
-    sg_id = ctx.runtime_properties['external_id']
+    sg_id = ctx.instance.runtime_properties['external_id']
     try:
         security_group_client.delete(sg_id)
     except Exception, e:

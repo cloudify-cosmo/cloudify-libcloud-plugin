@@ -23,15 +23,15 @@ from cloudify.exceptions import NonRecoverableError
 @with_floating_ip_client
 def create(ctx, floating_ip_client, **kwargs):
     # Already acquired?
-    if ctx.runtime_properties.get('ip_address'):
+    if ctx.instance.runtime_properties.get('ip_address'):
         ctx.logger.debug("Using already allocated Floating IP {0}".format(
-            ctx.runtime_properties['ip_address']))
+            ctx.instance.runtime_properties['ip_address']))
         return
 
     floatingip = {
         # No defaults
     }
-    floatingip.update(ctx.properties['floatingip'])
+    floatingip.update(ctx.node.properties['floatingip'])
 
     # Sugar: ip -> (copy as is) -> floating_ip_address
     if 'ip' in floatingip:
@@ -39,15 +39,17 @@ def create(ctx, floating_ip_client, **kwargs):
         del floatingip['ip']
 
     if 'ip_address' in floatingip:
-        ctx.runtime_properties['ip_address'] = floatingip['ip_address']
-        ctx.runtime_properties['enable_deletion'] = False  # Not acquired here
+        ctx.instance.runtime_properties['ip_address'] = \
+            floatingip['ip_address']
+        # Not acquired here
+        ctx.instance.runtime_properties['enable_deletion'] = False
         return
 
     fip = floating_ip_client.create()
-    ctx.runtime_properties['external_id'] = fip.ip
-    ctx.runtime_properties['floating_ip_address'] = fip.ip
+    ctx.instance.runtime_properties['external_id'] = fip.ip
+    ctx.instance.runtime_properties['floating_ip_address'] = fip.ip
     # Acquired here -> OK to delete
-    ctx.runtime_properties['enable_deletion'] = True
+    ctx.instance.runtime_properties['enable_deletion'] = True
     ctx.logger.info(
         "Allocated floating IP {0}".format(fip.ip))
 
@@ -55,12 +57,12 @@ def create(ctx, floating_ip_client, **kwargs):
 @operation
 @with_floating_ip_client
 def delete(ctx, floating_ip_client, **kwargs):
-    do_delete = bool(ctx.runtime_properties.get('enable_deletion'))
+    do_delete = bool(ctx.instance.runtime_properties.get('enable_deletion'))
     op = ['Not deleting', 'Deleting'][do_delete]
     ctx.logger.debug("{0} floating IP {1}".format(
-        op, ctx.runtime_properties['floating_ip_address']))
+        op, ctx.instance.runtime_properties['floating_ip_address']))
     if do_delete:
-        ip_address = ctx.runtime_properties['external_id']
+        ip_address = ctx.instance.runtime_properties['external_id']
         ip = floating_ip_client.get_by_ip(ip_address)
         if not ip:
             raise NonRecoverableError('Floating IP can\'t be found for IP: {}'
