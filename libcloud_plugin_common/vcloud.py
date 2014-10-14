@@ -80,7 +80,7 @@ class VCloudLibcloudServerClient(LibcloudServerClient):
   #      self.driver.ex_disassociate_address(ip)
 
     def get_image_by_name(self, image_name):
-        images = self.driver.list_images(i))
+        images = self.driver.list_images(i)
         if images:
             for image in images:
                 if image.name = image_name:

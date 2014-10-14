@@ -318,7 +318,7 @@ class Mapper(object):
         elif provider_name == Provider.EC2_US_WEST_OREGON:
             self.core_provider = Provider.EC2
             self.provider = Provider.EC2_US_WEST_OREGON
-        elif provider_name = Provider.VCLOUD:
+        elif provider_name == Provider.VCLOUD:
             self.provider = Provider.VCLOUD
             self.core_provider = Provider.VCLOUD
         else:
