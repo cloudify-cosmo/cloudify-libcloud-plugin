@@ -360,7 +360,7 @@ class Mapper(object):
             return EC2LibcloudSecurityGroupClient()\
                 .get(mapper=self, config=config)
         elif self.core_provider == Provider.VCLOUD:
-            from vcloud import EC2LibcloudSecurityGroupClient
+            from vcloud import VCloudLibcloudSecurityGroupClient
             return VCloudLibcloudSecurityGroupClient()\
                 .get(mapper=self, config=config)
 

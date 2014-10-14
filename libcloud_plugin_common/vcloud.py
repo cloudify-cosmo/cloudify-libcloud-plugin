@@ -83,7 +83,7 @@ class VCloudLibcloudServerClient(LibcloudServerClient):
         images = self.driver.list_images(i)
         if images:
             for image in images:
-                if image.name = image_name:
+                if image.name == image_name:
                     return image
 
     def get_size_by_ram(self, ram):
@@ -119,7 +119,7 @@ class VCloudLibcloudServerClient(LibcloudServerClient):
         else:
             vcpus = 1
 
-#For now it is disabled
+# For now it is disabled
 #        security_groups = map(rename,
 #                              server_context.get('security_groups', []))
 #        if provider_context.agents_security_group:
