@@ -352,7 +352,7 @@ class Mapper(object):
         elif self.core_provider == Provider.VCLOUD:
             from vcloud import VCLOUDLibcloudFloatingIPClient
             return VCloudLibcloudFloatingIPClient()\
-                VCloudLibcloudFloatingIPClient.get(mapper=self, config=config)
+                .get(mapper=self, config=config)
 
     def get_security_group_client(self, config):
         if self.core_provider == Provider.EC2:
@@ -362,7 +362,7 @@ class Mapper(object):
         elif self.core_provider == Provider.VCLOUD:
             from vcloud import EC2LibcloudSecurityGroupClient
             return VCloudLibcloudSecurityGroupClient()\
-                VCloudLibcloudSecurityGroupClient.get(mapper=self, config=config)
+                .get(mapper=self, config=config)
 
     def get_provider_context(self, context):
         if self.core_provider == Provider.EC2:
