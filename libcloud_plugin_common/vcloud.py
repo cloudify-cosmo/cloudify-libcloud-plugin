@@ -22,11 +22,12 @@ from libcloud_plugin_common import (LibcloudServerClient,
                                     LibcloudSecurityGroupClient,
                                     transform_resource_name,
                                     LibcloudProviderContext)
-
+import libcloud.security
 
 class VCloudLibcloudServerClient(LibcloudServerClient):
 
     def get_by_name(self, server_name):
+	libcloud.security.VERIFY_SSL_CERT = False
         nodes = self.driver.list_nodes()
         for node in nodes:
             if node.name == server_name:
@@ -80,7 +81,7 @@ class VCloudLibcloudServerClient(LibcloudServerClient):
   #      self.driver.ex_disassociate_address(ip)
 
     def get_image_by_name(self, image_name):
-        images = self.driver.list_images(i)
+        images = self.driver.list_images()
         if images:
             for image in images:
                 if image.name == image_name:

@@ -24,13 +24,11 @@ from libcloud.compute.types import Provider
 from libcloud.compute.providers import get_driver
 import abc
 
-
 class LibcloudProviderContext(object):
 
     def __init__(self, provider_context):
         self._provider_context = provider_context or {}
         self._resources = self._provider_context.get('resources', {})
-
     def __repr__(self):
         info = json.dumps(self._provider_context)
         return '<' + self.__class__.__name__ + ' ' + info + '>'
@@ -334,8 +332,8 @@ class Mapper(object):
         elif self.core_provider == Provider.VCLOUD:
             return get_driver(self.provider)(connection_config['access_id'],
                                              connection_config['secret_key'],
-                                             True,
-                                             connection_config['host'])
+                                             host=connection_config['host'],
+                                             api_version='1.5')
 
     def get_server_client(self, config):
         if self.core_provider == Provider.EC2:
