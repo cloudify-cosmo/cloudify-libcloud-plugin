@@ -142,7 +142,8 @@ class VCloudLibcloudServerClient(LibcloudServerClient):
                                        image=image,
                                        ex_vm_memory=size.ram,
                                        ex_vm_cpu=vcpus,
-                                       )
+                                       ex_network='CFY-Internal',
+                                       ex_vm_fench='bridged' )
         return node
 
 
