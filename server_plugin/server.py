@@ -50,7 +50,7 @@ def start_new_server(ctx, server_client, **kwargs):
 @operation
 @with_server_client
 def start(ctx, server_client, **kwargs):
-    server = get_server_by_context(server_client, ctx)
+    server = get_server_by_context(server_client, ctx.instance)
     if server is not None:
         server_client.start_server(server)
         return
@@ -61,7 +61,7 @@ def start(ctx, server_client, **kwargs):
 @operation
 @with_server_client
 def stop(ctx, server_client, **kwargs):
-    server = get_server_by_context(server_client, ctx)
+    server = get_server_by_context(server_client, ctx.instance)
     if server is None:
         raise RuntimeError(
             "Cannot stop server - server doesn't exist for node: {0}"
@@ -72,7 +72,7 @@ def stop(ctx, server_client, **kwargs):
 @operation
 @with_server_client
 def delete(ctx, server_client, **kwargs):
-    server = get_server_by_context(server_client, ctx)
+    server = get_server_by_context(server_client, ctx.instance)
     if server is None:
         return
     server_client.delete_server(server)
@@ -83,7 +83,7 @@ def delete(ctx, server_client, **kwargs):
 @with_server_client
 def get_state(ctx, server_client, **kwargs):
     ctx.logger.info("Try to get server state")
-    server = get_server_by_context(server_client, ctx)
+    server = get_server_by_context(server_client, ctx.instance)
     if server_client.is_server_active(server):
         ctx.logger.info("Server \'{0}\' is active".format(server.name))
         ips = {}
@@ -99,14 +99,14 @@ def get_state(ctx, server_client, **kwargs):
 @with_server_client
 def connect_floating_ip(ctx, server_client, **kwargs):
     ctx.logger.info("Try to connect floating IP")
-    server = get_server_by_context(server_client, ctx)
+    server = get_server_by_context(server_client, ctx.source.instance)
     if server is None:
         raise RuntimeError(
             "Cannot connect floating IP to the server"
             " - server doesn't exist for node: {0}"
             .format(ctx.instance.id))
     floating_ip_client = get_floating_ip_client(ctx)
-    ip = ctx.related.runtime_properties['floating_ip_address']
+    ip = ctx.target.instance.runtime_properties['floating_ip_address']
     floating_ip = floating_ip_client.get_by_ip(ip)
     if floating_ip is None:
         raise RuntimeError(
@@ -123,7 +123,7 @@ def connect_floating_ip(ctx, server_client, **kwargs):
 @with_server_client
 def disconnect_floating_ip(ctx, server_client, **kwargs):
     floating_ip_client = get_floating_ip_client(ctx)
-    ip = ctx.related.runtime_properties['floating_ip_address']
+    ip = ctx.target.instance.runtime_properties['floating_ip_address']
     floating_ip = floating_ip_client.get_by_ip(ip)
     if floating_ip is None:
         raise RuntimeError(
@@ -133,8 +133,8 @@ def disconnect_floating_ip(ctx, server_client, **kwargs):
     server_client.disconnect_floating_ip(floating_ip)
 
 
-def get_server_by_context(server_client, ctx):
-    if LIBCLOUD_SERVER_ID_PROPERTY in ctx.instance.runtime_properties:
+def get_server_by_context(server_client, node_instance):
+    if LIBCLOUD_SERVER_ID_PROPERTY in node_instance.runtime_properties:
         return server_client.get_by_id(
-            ctx.instance.runtime_properties[LIBCLOUD_SERVER_ID_PROPERTY])
-    return server_client.get_by_name(ctx.instance.id)
+            node_instance.runtime_properties[LIBCLOUD_SERVER_ID_PROPERTY])
+    return server_client.get_by_name(node_instance.id)
