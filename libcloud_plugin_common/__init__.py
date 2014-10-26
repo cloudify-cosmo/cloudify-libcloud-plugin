@@ -14,15 +14,18 @@
 #  * limitations under the License.
 
 
+import abc
 import json
 import os
-import cloudify
-from cloudify.exceptions import NonRecoverableError, RecoverableError
-from functools import wraps
 import sys
+
+from functools import wraps
+
 from libcloud.compute.types import Provider
 from libcloud.compute.providers import get_driver
-import abc
+
+from cloudify import context
+from cloudify.exceptions import NonRecoverableError, RecoverableError
 
 
 class LibcloudProviderContext(object):
@@ -200,7 +203,7 @@ def _find_instanceof_in_kw(cls, kw):
 
 
 def _find_context_in_kw(kw):
-    return _find_instanceof_in_kw(cloudify.context.CloudifyContext, kw)
+    return _find_instanceof_in_kw(context.CloudifyContext, kw)
 
 
 def _get_connection_config(ctx):
@@ -224,7 +227,12 @@ def _get_connection_config(ctx):
     static_config = _get_static_config()
     cfg = {}
     cfg.update(static_config)
-    config = ctx.properties.get('connection_config')
+    if ctx.type == context.NODE_INSTANCE:
+        config = ctx.node.properties.get('connection_config')
+    else:
+        config = ctx.source.node.properties.get('connection_config')
+        if config is None:
+            config = ctx.target.node.properties.get('connection_config')
     if config:
         cfg.update(config)
     return cfg
