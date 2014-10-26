@@ -38,7 +38,7 @@ def start_new_server(ctx, server_client, **kwargs):
 
     ctx.logger.info("Creating VM")
 
-    server = server_client.create(ctx.instace.id,
+    server = server_client.create(ctx.instance.id,
                                   ctx,
                                   server,
                                   provider_context)
