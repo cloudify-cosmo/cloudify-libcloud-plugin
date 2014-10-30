@@ -222,7 +222,7 @@ def _get_connection_config(ctx):
     static_config = _get_static_config()
     cfg = {}
     cfg.update(static_config)
-    config = ctx.properties.get('connection_config')
+    config = ctx.node.properties.get('connection_config')
     if config:
         cfg.update(config)
     return cfg

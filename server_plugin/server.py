@@ -31,23 +31,23 @@ def start_new_server(ctx, server_client, **kwargs):
     provider_context = provider(ctx)
 
     server = {
-        'name': ctx.node_id
+        'name': ctx.instance.id
     }
-    server.update(copy.deepcopy(ctx.properties['server']))
+    server.update(copy.deepcopy(ctx.node.properties['server']))
     transform_resource_name(server, ctx)
 
     ctx.logger.info("Creating VM")
 
-    server = server_client.create(ctx.node_id, ctx, server, provider_context)
+    server = server_client.create(ctx.instance.id, ctx, server, provider_context)
     server_client.wait_for_server_to_be_running(server, TIMEOUT, SLEEP_TIME)
 
-    ctx.runtime_properties[LIBCLOUD_SERVER_ID_PROPERTY] = server.id
+    ctx.instance.runtime_properties[LIBCLOUD_SERVER_ID_PROPERTY] = server.id
 
 
 @operation
 @with_server_client
 def start(ctx, server_client, **kwargs):
-    server = get_server_by_context(server_client, ctx)
+    server = get_server_by_context(server_client, ctx.instance)
     if server is not None:
         server_client.start_server(server)
         return
@@ -58,18 +58,18 @@ def start(ctx, server_client, **kwargs):
 @operation
 @with_server_client
 def stop(ctx, server_client, **kwargs):
-    server = get_server_by_context(server_client, ctx)
+    server = get_server_by_context(server_client, ctx.instance)
     if server is None:
         raise RuntimeError(
             "Cannot stop server - server doesn't exist for node: {0}"
-            .format(ctx.node_id))
+            .format(ctx.instance.id))
     server_client.stop_server(server)
 
 
 @operation
 @with_server_client
 def delete(ctx, server_client, **kwargs):
-    server = get_server_by_context(server_client, ctx)
+    server = get_server_by_context(server_client, ctx.instance)
     if server is None:
         return
     server_client.delete_server(server)
@@ -80,14 +80,14 @@ def delete(ctx, server_client, **kwargs):
 @with_server_client
 def get_state(ctx, server_client, **kwargs):
     ctx.logger.info("Try to get server state")
-    server = get_server_by_context(server_client, ctx)
+    server = get_server_by_context(server_client, ctx.instance)
     if server_client.is_server_active(server):
         ctx.logger.info("Server \'{0}\' is active".format(server.name))
         ips = {}
         ips['private'] = server.private_ips
         ips['public'] = server.public_ips
-        ctx.runtime_properties['networks'] = ips
-        ctx.runtime_properties['ip'] = server.private_ips[0]
+        ctx.instance.runtime_properties['networks'] = ips
+        ctx.instance.runtime_properties['ip'] = server.private_ips[0]
         return True
     return False
 
@@ -96,14 +96,14 @@ def get_state(ctx, server_client, **kwargs):
 @with_server_client
 def connect_floating_ip(ctx, server_client, **kwargs):
     ctx.logger.info("Try to connect floating IP")
-    server = get_server_by_context(server_client, ctx)
+    server = get_server_by_context(server_client, ctx.instance)
     if server is None:
         raise RuntimeError(
             "Cannot connect floating IP to the server"
             " - server doesn't exist for node: {0}"
-            .format(ctx.node_id))
+            .format(ctx.instance.id))
     floating_ip_client = get_floating_ip_client(ctx)
-    ip = ctx.related.runtime_properties['floating_ip_address']
+    ip = ctx.target.instance.runtime_properties['floating_ip_address']
     floating_ip = floating_ip_client.get_by_ip(ip)
     if floating_ip is None:
         raise RuntimeError(
@@ -130,8 +130,8 @@ def disconnect_floating_ip(ctx, server_client, **kwargs):
     server_client.disconnect_floating_ip(floating_ip)
 
 
-def get_server_by_context(server_client, ctx):
-    if LIBCLOUD_SERVER_ID_PROPERTY in ctx.runtime_properties:
-        return server_client.get_by_id(
-            ctx.runtime_properties[LIBCLOUD_SERVER_ID_PROPERTY])
-    return server_client.get_by_name(ctx.node_id)
+def get_server_by_context(server_client, node_instance):
+    if LIBCLOUD_SERVER_ID_PROPERTY in node_instance.runtime_properties:
+         return server_client.get_by_id(
+            node_instance.runtime_properties[LIBCLOUD_SERVER_ID_PROPERTY])
+    return server_client.get_by_name(node_instance.id)
