@@ -119,6 +119,10 @@ class VCloudLibcloudServerClient(LibcloudServerClient):
             vcpus = int(server_context['vcpus'])
         else:
             vcpus = 1
+        if 'management_network_name' in server_context:
+            management_network_name = server_context['management_network_name']
+        else:
+            raise NonRecoverableError("management_network_name is a required parameter")
 
 # For now it is disabled
 #        security_groups = map(rename,
@@ -142,7 +146,7 @@ class VCloudLibcloudServerClient(LibcloudServerClient):
                                        image=image,
                                        ex_vm_memory=size.ram,
                                        ex_vm_cpu=vcpus,
-                                       ex_network='CFY-Internal',
+                                       ex_network=management_network_name,
                                        ex_vm_fench='bridged' )
         return node
 
