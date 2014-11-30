@@ -1,4 +1,8 @@
 cloudify-libcloud-plugin
 ========================
 
-Cloudify Libcloud plugin
+Cloudify (EC2) Libcloud plugin
+
+## Usage
+
+Reference link will be provided soon.
