@@ -32,7 +32,7 @@ setup(
     license='LICENSE',
     description='Cloudify plugin for Libcloud infrastructure.',
     install_requires=[
-        'cloudify-plugins-common==3.2a4',
+        'cloudify-plugins-common>=3.2a4',
         'apache-libcloud==0.15.1',
     ]
 )
