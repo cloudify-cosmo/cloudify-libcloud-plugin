@@ -4,7 +4,7 @@
 plugins:
     libcloud:
         executor: central_deployment_agent
-        source: https://github.com/cloudify-cosmo/cloudify-libcloud-plugin/archive/1.3m2.zip
+        source: https://github.com/cloudify-cosmo/cloudify-libcloud-plugin/archive/1.3m3.zip
 
 relationships:
   cloudify.libcloud.server_connected_to_floating_ip:
